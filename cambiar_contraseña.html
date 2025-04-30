@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cambio de Contraseña</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #6dd5fa, #2980b9);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            width: 400px;
+        }
+        .container h2 {
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            padding: 10px;
+            width: 100%;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #6dd5fa;
+        }
+        .back-link {
+            margin-top: 20px;
+            color: #2980b9;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Cambiar Contraseña</h2>
+    <form id="changePasswordForm">
+        <input type="email" id="email" placeholder="Correo electrónico" required />
+        <input type="password" id="newPassword" placeholder="Nueva Contraseña" required />
+        <button type="submit">Cambiar Contraseña</button>
+    </form>
+    <div class="back-link" onclick="goBack()">Volver al inicio de sesión</div>
+</div>
+
+<script>
+    // Función para manejar el envío del formulario de cambio de contraseña
+    document.getElementById('changePasswordForm').onsubmit = async function (e) {
+        e.preventDefault();
+        const formData = {
+            email: document.getElementById('email').value,
+            newPassword: document.getElementById('newPassword').value
+        };
+
+        // Aquí, en un entorno real, se debe realizar una solicitud a un servidor para cambiar la contraseña
+        // Por ejemplo: const response = await fetch('http://localhost:3000/change-password', { ... });
+
+        // Simulamos un resultado exitoso
+        const result = 'Contraseña cambiada con éxito';
+
+        // Muestra el resultado
+        alert(result);
+
+        // Después de un cambio exitoso, redirigimos al usuario a la página de inicio de sesión
+        if (result === 'Contraseña cambiada con éxito') {
+            window.location.href = 'index.html'; // Redirige al inicio de sesión
+        }
+    };
+
+    // Función para redirigir al usuario al inicio de sesión
+    function goBack() {
+        window.location.href = 'index.html'; // Redirige a la página de inicio de sesión
+    }
+</script>
+</body>
+</html>

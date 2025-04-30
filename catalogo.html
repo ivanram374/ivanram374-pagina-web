@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Casas</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f2f2f2;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 10px;
+        }
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 30px;
+            color: #2980b9;
+        }
+        .catalogo-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        .casa-card {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease-in-out;
+        }
+        .casa-card:hover {
+            transform: scale(1.05);
+        }
+        .casa-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        .card-content {
+            padding: 20px;
+            text-align: center;
+        }
+        .card-content h3 {
+            margin: 15px 0;
+            font-size: 1.8rem;
+            color: #2980b9;
+        }
+        .card-content p {
+            font-size: 1rem;
+            color: #555;
+        }
+        .cta-button {
+            margin-top: 15px;
+            padding: 10px 20px;
+            background: #2980b9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+        .cta-button:hover {
+            background: #6dd5fa;
+        }
+        .precio {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-top: 10px;
+        }
+        .carrito {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 250px;
+            padding: 15px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            font-size: 0.9rem;
+        }
+        .carrito h3 {
+            font-size: 1.2rem;
+            color: #2980b9;
+            margin-bottom: 10px;
+        }
+        .producto-carrito {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .producto-carrito p {
+            margin: 0;
+            font-size: 0.9rem;
+        }
+        .boton-eliminar {
+            background-color: #e74c3c;
+            color: #fff;
+            border: none;
+            padding: 3px 7px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            border-radius: 5px;
+        }
+        .boton-eliminar:hover {
+            background-color: #c0392b;
+        }
+        .total {
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 10px;
+            color: #e74c3c;
+        }
+        .boton-comprar {
+            background-color: #2ecc71;
+            color: #fff;
+            padding: 10px 20px;
+            font-size: 1rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+        }
+        .boton-comprar:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Catálogo de Casas</h1>
+
+<!-- Contenedor del Carrito de Compras -->
+<div class="carrito">
+    <h3>Carrito de Compras</h3>
+    <div id="productos-carrito"></div>
+    <div class="total">Total: $0</div>
+    <button class="boton-comprar" onclick="realizarCompra()">Comprar</button>
+</div>
+
+<div class="catalogo-container">
+    <!-- Casa 1 -->
+    <div class="casa-card" id="casa1">
+        <img src="https://i.ibb.co/xKVDSj2V/casa1.jpg" alt="Casa en la playa">
+        <div class="card-content">
+            <h3>Casa en la Playa</h3>
+            <p>Una hermosa casa frente al mar, ideal para vacaciones o una vida relajada junto a la playa.</p>
+            <button class="cta-button" onclick="agregarAlCarrito('Casa en la Playa', 1500000, 'https://i.ibb.co/xKVDSj2V/casa1.jpg', 'stock-casa1')">Agregar al carrito</button>
+            <div class="precio">Desde $1,500,000</div>
+            <div id="stock-casa1">Stock disponible: 5</div>
+        </div>
+    </div>
+
+    <!-- Casa 2 -->
+    <div class="casa-card" id="casa2">
+        <img src="https://i.ibb.co/PGxCszFB/casa5.webp" alt="Casa en el Bosque">
+        <div class="card-content">
+            <h3>Casa en el Bosque</h3>
+            <p>Vive rodeado de naturaleza en esta acogedora casa en el bosque.</p>
+            <button class="cta-button" onclick="agregarAlCarrito('Casa en el Bosque', 1200000, 'https://i.ibb.co/PGxCszFB/casa5.webp', 'stock-casa2')">Agregar al carrito</button>
+            <div class="precio">Desde $1,200,000</div>
+            <div id="stock-casa2">Stock disponible: 3</div>
+        </div>
+    </div>
+
+    <!-- Casa 3 -->
+    <div class="casa-card" id="casa3">
+        <img src="https://i.ibb.co/fG2SSmHC/casa6.jpg" alt="Casa en la Ciudad">
+        <div class="card-content">
+            <h3>Casa en la Ciudad</h3>
+            <p>Moderna y con todas las comodidades para una vida urbana.</p>
+            <button class="cta-button" onclick="agregarAlCarrito('Casa en la Ciudad', 800000, 'https://i.ibb.co/fG2SSmHC/casa6.jpg', 'stock-casa3')">Agregar al carrito</button>
+            <div class="precio">Desde $800,000</div>
+            <div id="stock-casa3">Stock disponible: 8</div>
+        </div>
+    </div>
+
+    <!-- Casa 4 -->
+    <div class="casa-card" id="casa4">
+        <img src="https://i.ibb.co/cKfPHPGX/casa3.jpg" alt="Casa en el Lago">
+        <div class="card-content">
+            <h3>Casa en el Lago</h3>
+            <p>Con vistas impresionantes al lago y espacio para actividades al aire libre.</p>
+            <button class="cta-button" onclick="agregarAlCarrito('Casa en el Lago', 2000000, 'https://i.ibb.co/cKfPHPGX/casa3.jpg', 'stock-casa4')">Agregar al carrito</button>
+            <div class="precio">Desde $2,000,000</div>
+            <div id="stock-casa4">Stock disponible: 4</div>
+        </div>
+    </div>
+
+    <!-- Casa 5 -->
+    <div class="casa-card" id="casa5">
+        <img src="https://i.ibb.co/prWGxmXf/casa2.webp" alt="Casa en la Montaña">
+        <div class="card-content">
+            <h3>Casa en la Montaña</h3>
+            <p>Para los amantes de la naturaleza y la tranquilidad, ideal para escapadas de fin de semana.</p>
+            <button class="cta-button" onclick="agregarAlCarrito('Casa en la Montaña', 950000, 'https://i.ibb.co/prWGxmXf/casa2.webp', 'stock-casa5')">Agregar al carrito</button>
+            <div class="precio">Desde $950,000</div>
+            <div id="stock-casa5">Stock disponible: 6</div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Gráfico de Ventas -->
+<canvas id="graficaVentas" width="400" height="200"></canvas>
+
+<script>
+// Incluir jsPDF
+const { jsPDF } = window.jspdf;
+
+// Array para almacenar los productos del carrito
+let carrito = [];
+
+// Información de stock de las casas
+const stockCasas = {
+    'Casa en la Playa': 5,
+    'Casa en el Bosque': 3,
+    'Casa en la Ciudad': 8,
+    'Casa en el Lago': 4,
+    'Casa en la Montaña': 6
+};
+
+// Función para agregar productos al carrito
+function agregarAlCarrito(nombre, precio, imagenUrl, stockId) {
+    if (stockCasas[nombre] > 0) {
+        carrito.push({ nombre, precio, imagen: imagenUrl });
+        stockCasas[nombre] -= 1;
+
+        // Actualizar stock en la vista
+        const stockDiv = document.getElementById(stockId);
+        stockDiv.textContent = `Stock disponible: ${stockCasas[nombre]}`;
+
+        actualizarCarrito();
+    } else {
+        alert('Lo siento, este producto ya no está disponible.');
+    }
+}
+
+// Función para eliminar productos del carrito
+function eliminarDelCarrito(indice) {
+    const productoEliminado = carrito.splice(indice, 1)[0];
+    stockCasas[productoEliminado.nombre] += 1;
+    actualizarCarrito();
+}
+
+// Función para actualizar el carrito visualmente
+function actualizarCarrito() {
+    const productosCarritoDiv = document.getElementById('productos-carrito');
+    productosCarritoDiv.innerHTML = '';  // Limpiar el contenido del carrito
+    let total = 0;
+    carrito.forEach((producto, indice) => {
+        total += producto.precio;
+        const productoDiv = document.createElement('div');
+        productoDiv.classList.add('producto-carrito');
+        productoDiv.innerHTML = `
+            <p>${producto.nombre} - $${producto.precio.toLocaleString()}</p>
+            <button class="boton-eliminar" onclick="eliminarDelCarrito(${indice})">Eliminar</button>
+        `;
+        productosCarritoDiv.appendChild(productoDiv);
+    });
+    document.querySelector('.total').textContent = `Total: $${total.toLocaleString()}`;
+}
+
+// Función para realizar la compra y registrar la venta
+function realizarCompra() {
+    if (carrito.length > 0) {
+        // Crear una instancia de jsPDF
+        const doc = new jsPDF();
+        doc.text('Factura de Compra', 10, 10);
+        doc.text(`Fecha: ${new Date().toLocaleDateString()}`, 10, 20);
+        doc.text('Detalle de productos:', 10, 30);
+
+        let y = 40;
+        carrito.forEach((producto) => {
+            const imageUrl = producto.imagen;
+
+            // Usar addImage para agregar las imágenes al PDF
+            if (imageUrl) {
+                doc.addImage(imageUrl, 'JPEG', 10, y, 30, 30); // O 'WEBP' si la imagen es de ese formato
+                y += 35;
+            }
+
+            doc.text(`${producto.nombre} - $${producto.precio.toLocaleString()}`, 10, y);
+            y += 10;
+        });
+
+        const total = carrito.reduce((acc, producto) => acc + producto.precio, 0);
+        doc.text(`Total: $${total.toLocaleString()}`, 10, y);
+
+        // Descargar el PDF
+        doc.save('factura_compra.pdf');
+
+        // Limpiar carrito después de la compra
+        carrito = [];
+        actualizarCarrito();
+    } else {
+        alert('Tu carrito está vacío. Agrega productos antes de comprar.');
+    }
+}
+
+// Inicializar gráfica al cargar la página
+window.onload = function() {
+    actualizarCarrito();
+};
+</script>
+
+</body>
+</html>
+

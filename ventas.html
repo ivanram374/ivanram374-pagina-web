@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ventas por Mes</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #6e7f9b, #465b70); /* Fondo elegante con gradiente */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+            overflow: auto; /* Permite el desplazamiento si es necesario */
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            width: 100%;
+            max-width: 800px;
+            background: rgba(255, 255, 255, 0.9); /* Fondo semitransparente */
+            margin-top: 50px; /* Añadí un margen superior para separar el título de la parte superior de la página */
+        }
+
+        h1 {
+            text-align: center;
+            color: #000; /* Cambié el color a negro */
+            font-size: 2rem;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        /* Estilo del formulario */
+        #ventasForm {
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        label {
+            font-size: 1.2rem;
+            color: #444;
+            font-weight: bold;
+        }
+
+        select, input {
+            padding: 12px;
+            font-size: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            transition: border-color 0.3s ease;
+            background-color: #f7f7f7;
+        }
+
+        select:focus, input:focus {
+            outline: none;
+            border-color: #4caf50;
+            background-color: #ffffff;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 1.1rem;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilo de la gráfica */
+        canvas {
+            width: 100% !important;
+            height: 400px !important;
+            border-radius: 8px;
+        }
+
+        /* Estilo para la alerta */
+        .alert {
+            background-color: #f44336;
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Estilo para los contenedores de formulario y gráfico */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Estilo para el total de ventas */
+        #totalVentas {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            text-align: center;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Ingreso de Ventas por Mes</h1>
+
+        <!-- Alerta de error -->
+        <div id="alert" class="alert">Por favor ingrese un número válido de ventas.</div>
+
+        <div class="form-container">
+            <!-- Formulario para insertar las ventas -->
+            <div id="ventasForm">
+                <label for="mes">Seleccione el mes:</label>
+                <select id="mes">
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+
+                <label for="ventas">Cantidad de ventas:</label>
+                <input type="number" id="ventas" placeholder="Número de ventas" min="0">
+                
+                <button onclick="registrarVentas()">Registrar Ventas</button>
+            </div>
+
+            <!-- Campos para seleccionar el rango de meses -->
+            <div>
+                <label for="mesInicio">Mes inicio:</label>
+                <select id="mesInicio">
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+
+                <label for="mesFin">Mes fin:</label>
+                <select id="mesFin">
+                    <option value="Enero">Enero</option>
+                    <option value="Febrero">Febrero</option>
+                    <option value="Marzo">Marzo</option>
+                    <option value="Abril">Abril</option>
+                    <option value="Mayo">Mayo</option>
+                    <option value="Junio">Junio</option>
+                    <option value="Julio">Julio</option>
+                    <option value="Agosto">Agosto</option>
+                    <option value="Septiembre">Septiembre</option>
+                    <option value="Octubre">Octubre</option>
+                    <option value="Noviembre">Noviembre</option>
+                    <option value="Diciembre">Diciembre</option>
+                </select>
+
+                <button onclick="graficarVentas()">Graficar Ventas</button>
+            </div>
+
+            <!-- Área para mostrar la gráfica -->
+            <canvas id="ventasChart"></canvas>
+
+            <!-- Área para mostrar el total de ventas -->
+            <div id="totalVentas">Total de Ventas: 0</div>
+        </div>
+    </div>
+
+    <script>
+        // Inicializamos los datos y el gráfico
+        let ventasMensuales = {
+            Enero: 0, Febrero: 0, Marzo: 0, Abril: 0, Mayo: 0, Junio: 0,
+            Julio: 0, Agosto: 0, Septiembre: 0, Octubre: 0, Noviembre: 0, Diciembre: 0
+        };
+
+        // Configuración del gráfico
+        const ctx = document.getElementById('ventasChart').getContext('2d');
+        const ventasChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: Object.keys(ventasMensuales),
+                datasets: [{
+                    label: 'Ventas por Mes',
+                    data: Object.values(ventasMensuales),
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Función para registrar ventas
+        function registrarVentas() {
+            const mes = document.getElementById('mes').value;
+            const ventas = parseInt(document.getElementById('ventas').value);
+
+            if (!isNaN(ventas) && ventas >= 0) {
+                // Acumulamos las ventas en el mes seleccionado
+                ventasMensuales[mes] += ventas;
+
+                // Actualizamos la gráfica con los nuevos datos
+                ventasChart.data.datasets[0].data = Object.values(ventasMensuales);
+                ventasChart.update();
+                
+                // Limpiamos el campo de ventas
+                document.getElementById('ventas').value = '';
+
+                // Actualizamos el total de ventas
+                actualizarTotalVentas();
+
+                // Ocultamos la alerta en caso de éxito
+                document.getElementById('alert').style.display = 'none';
+            } else {
+                // Mostramos la alerta de error si el valor es inválido
+                document.getElementById('alert').style.display = 'block';
+            }
+        }
+
+        // Función para graficar ventas según el rango de meses seleccionado
+        function graficarVentas() {
+            const mesInicio = document.getElementById('mesInicio').value;
+            const mesFin = document.getElementById('mesFin').value;
+
+            // Obtener el índice de los meses seleccionados
+            const meses = Object.keys(ventasMensuales);
+            const inicio = meses.indexOf(mesInicio);
+            const fin = meses.indexOf(mesFin);
+
+            // Validar si el rango es correcto
+            if (inicio <= fin) {
+                const mesesSeleccionados = meses.slice(inicio, fin + 1);
+                const ventasSeleccionadas = mesesSeleccionados.map(mes => ventasMensuales[mes]);
+
+                // Actualizamos la gráfica con los datos del rango seleccionado
+                ventasChart.data.labels = mesesSeleccionados;
+                ventasChart.data.datasets[0].data = ventasSeleccionadas;
+                ventasChart.update();
+            } else {
+                alert('El mes de inicio debe ser antes que el mes de fin.');
+            }
+        }
+
+        // Función para actualizar el total de ventas
+        function actualizarTotalVentas() {
+            const total = Object.values(ventasMensuales).reduce((a, b) => a + b, 0);
+            document.getElementById('totalVentas').textContent = `Total de Ventas: ${total}`;
+        }
+    </script>
+</body>
+</html>
+
+
+
+
+
+
+
+
